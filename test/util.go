@@ -1,4 +1,4 @@
-package cmd
+package test
 
 import (
 	"os"
@@ -9,7 +9,7 @@ import (
 	"golang.org/x/text/encoding"
 )
 
-func createFileWriteBytes(t *testing.T, dir string, name string, content []byte) string {
+func CreateFileWriteBytes(t *testing.T, dir string, name string, content []byte) string {
 
 	file, err := os.Create(filepath.Join(dir, name))
 	require.NoError(t, err)
@@ -23,12 +23,12 @@ func createFileWriteBytes(t *testing.T, dir string, name string, content []byte)
 	return file.Name()
 }
 
-func createFileWriteString(t *testing.T, dir string, name string, content string) string {
+func CreateFileWriteString(t *testing.T, dir string, name string, content string) string {
 
-	return createFileWriteBytes(t, dir, name, []byte(content))
+	return CreateFileWriteBytes(t, dir, name, []byte(content))
 }
 
-func createTempDir(t *testing.T) string {
+func CreateTempDir(t *testing.T) string {
 
 	tempDir, err := os.MkdirTemp("", "filep")
 	require.NoError(t, err)
@@ -36,7 +36,7 @@ func createTempDir(t *testing.T) string {
 	return tempDir
 }
 
-func createDir(t *testing.T, parent string, name string) string {
+func CreateDir(t *testing.T, parent string, name string) string {
 
 	dir := filepath.Join(parent, name)
 	err := os.Mkdir(dir, os.ModePerm)
@@ -45,7 +45,7 @@ func createDir(t *testing.T, parent string, name string) string {
 	return dir
 }
 
-func readBytes(t *testing.T, name string) []byte {
+func ReadBytes(t *testing.T, name string) []byte {
 
 	bo, err := os.ReadFile(name)
 	require.NoError(t, err)
@@ -53,20 +53,20 @@ func readBytes(t *testing.T, name string) []byte {
 	return bo
 }
 
-func readString(t *testing.T, name string) string {
+func ReadString(t *testing.T, name string) string {
 
-	bo := readBytes(t, name)
+	bo := ReadBytes(t, name)
 	return string(bo)
 }
 
-func byteToString(t *testing.T, bytes []byte, enc encoding.Encoding) string {
+func ByteToString(t *testing.T, bytes []byte, enc encoding.Encoding) string {
 	decoded, err := enc.NewDecoder().Bytes(bytes)
 	require.NoError(t, err)
 
 	return string(decoded)
 }
 
-func stringToByte(t *testing.T, str string, enc encoding.Encoding) []byte {
+func StringToByte(t *testing.T, str string, enc encoding.Encoding) []byte {
 	encoded, err := enc.NewEncoder().Bytes([]byte(str))
 	require.NoError(t, err)
 

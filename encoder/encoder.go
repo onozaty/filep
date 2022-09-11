@@ -23,7 +23,7 @@ func NewEncoder(name string) (Encoder, error) {
 
 func NewEncodingEncoder(name string) (*EncodingEncoder, error) {
 
-	encoding, err := htmlindex.Get(name)
+	encoding, err := Encoding(name)
 	if err != nil {
 		return nil, err
 	}
@@ -31,6 +31,11 @@ func NewEncodingEncoder(name string) (*EncodingEncoder, error) {
 	return &EncodingEncoder{
 		encoding: encoding,
 	}, nil
+}
+
+func Encoding(name string) (encoding.Encoding, error) {
+
+	return htmlindex.Get(name)
 }
 
 type EncodingEncoder struct {

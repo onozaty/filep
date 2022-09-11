@@ -51,6 +51,8 @@ func newReplaceCmd() *cobra.Command {
 				}
 			}
 
+			// TODO regex と string のどちらかが指定されていることをチェック
+
 			// 引数の解析に成功した時点で、エラーが起きてもUsageは表示しない
 			cmd.SilenceUsage = true
 
