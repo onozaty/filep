@@ -5,8 +5,8 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/onozaty/filep/encoder"
-	"github.com/onozaty/filep/replacer"
+	"github.com/onozaty/filep/replace/encoder"
+	"github.com/onozaty/filep/replace/replacer"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"

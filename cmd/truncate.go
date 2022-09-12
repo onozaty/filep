@@ -3,7 +3,8 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/onozaty/filep/truncator"
+	"github.com/onozaty/filep/truncate/truncator"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -94,7 +95,7 @@ func newTruncator(condition truncateCondition, charset string) (truncator.Trunca
 func getFlagTruncateNum(f *pflag.FlagSet, name string) *int64 {
 
 	if f.Changed(name) {
-		num, _ := f.GetInt64("byte")
+		num, _ := f.GetInt64(name)
 		return &num
 	}
 

@@ -18,12 +18,12 @@ func NewEncoder(name string) (Encoder, error) {
 		return &BinaryEncoder{}, nil
 	}
 
-	return NewEncodingEncoder(name)
+	return newEncodingEncoder(name)
 }
 
-func NewEncodingEncoder(name string) (*EncodingEncoder, error) {
+func newEncodingEncoder(name string) (*EncodingEncoder, error) {
 
-	encoding, err := Encoding(name)
+	encoding, err := htmlindex.Get(name)
 	if err != nil {
 		return nil, err
 	}
@@ -31,11 +31,6 @@ func NewEncodingEncoder(name string) (*EncodingEncoder, error) {
 	return &EncodingEncoder{
 		encoding: encoding,
 	}, nil
-}
-
-func Encoding(name string) (encoding.Encoding, error) {
-
-	return htmlindex.Get(name)
 }
 
 type EncodingEncoder struct {
