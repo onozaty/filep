@@ -72,3 +72,41 @@ func TestNewByteTruncator(t *testing.T) {
 			test.ReadBytes(t, output))
 	}
 }
+
+func TestNewByteTruncator_InputFileNotFound(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := filepath.Join(d, "xxxx")
+	output := filepath.Join(d, "output")
+
+	// ACT
+	err := NewByteTruncator(10).Truncate(input, output)
+
+	// ASSERT
+	require.Error(t, err)
+	pathErr := err.(*os.PathError)
+	assert.Equal(t, input, pathErr.Path)
+	assert.Equal(t, "open", pathErr.Op)
+}
+
+func TestNewByteTruncator_OutputFileNotFound(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateFileWriteBytes(t, d, "input", []byte{})
+	output := filepath.Join(d, "non", "output")
+
+	// ACT
+	err := NewByteTruncator(10).Truncate(input, output)
+
+	// ASSERT
+	require.Error(t, err)
+	pathErr := err.(*os.PathError)
+	assert.Equal(t, output, pathErr.Path)
+	assert.Equal(t, "open", pathErr.Op)
+}

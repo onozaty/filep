@@ -58,5 +58,5 @@ func TestNewEncoder_Invalid(t *testing.T) {
 	// ACT / ASSERT
 	_, err := NewEncoder("xxxx")
 	require.Error(t, err)
-	assert.Equal(t, "htmlindex: invalid encoding name", err.Error())
+	assert.EqualError(t, err, "xxxx is invalid: htmlindex: invalid encoding name")
 }

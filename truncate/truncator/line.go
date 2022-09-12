@@ -5,8 +5,9 @@ import (
 	"io"
 	"os"
 
+	enc "github.com/onozaty/filep/encoding"
+
 	"golang.org/x/text/encoding"
-	"golang.org/x/text/encoding/htmlindex"
 	"golang.org/x/text/transform"
 )
 
@@ -17,7 +18,7 @@ type lineTruncator struct {
 
 func NewLineTruncator(lineNum int64, charset string) (Truncator, error) {
 
-	encoding, err := htmlindex.Get(charset)
+	encoding, err := enc.Encoding(charset)
 	if err != nil {
 		return nil, err
 	}

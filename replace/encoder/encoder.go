@@ -3,8 +3,9 @@ package encoder
 import (
 	"strings"
 
+	enc "github.com/onozaty/filep/encoding"
+
 	"golang.org/x/text/encoding"
-	"golang.org/x/text/encoding/htmlindex"
 )
 
 type Encoder interface {
@@ -23,7 +24,7 @@ func NewEncoder(name string) (Encoder, error) {
 
 func newEncodingEncoder(name string) (*EncodingEncoder, error) {
 
-	encoding, err := htmlindex.Get(name)
+	encoding, err := enc.Encoding(name)
 	if err != nil {
 		return nil, err
 	}

@@ -435,7 +435,7 @@ func TestReplaceCmd_Charset_Invalid(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	assert.Equal(t, "htmlindex: invalid encoding name", err.Error())
+	assert.EqualError(t, err, "xxxx is invalid: htmlindex: invalid encoding name")
 }
 
 func TestReplaceCmd_InvalidRegex(t *testing.T) {
