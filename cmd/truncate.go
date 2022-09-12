@@ -24,7 +24,7 @@ func newTruncateCmd() *cobra.Command {
 			lineNum := getFlagTruncateNum(cmd.Flags(), "line")
 
 			recursive, _ := cmd.Flags().GetBool("recursive")
-			charset, _ := cmd.Flags().GetString("charset")
+			encoding, _ := cmd.Flags().GetString("encoding")
 
 			if byteNum == nil && charNum == nil && lineNum == nil {
 				return fmt.Errorf("no number is specified")
@@ -41,7 +41,7 @@ func newTruncateCmd() *cobra.Command {
 					charNum: charNum,
 					lineNum: lineNum,
 				},
-				charset,
+				encoding,
 				recursive)
 		},
 	}
@@ -56,7 +56,7 @@ func newTruncateCmd() *cobra.Command {
 	truncateCmd.Flags().Int64P("line", "l", 0, "Number of lines.")
 
 	truncateCmd.Flags().BoolP("recursive", "", false, "Recursively traverse the input dir.")
-	truncateCmd.Flags().StringP("charset", "", "UTF-8", "Charset.")
+	truncateCmd.Flags().StringP("encoding", "", "UTF-8", "Encoding.")
 
 	return truncateCmd
 }
@@ -67,9 +67,9 @@ type truncateCondition struct {
 	lineNum *int64
 }
 
-func runTruncate(inputPath string, outputPath string, condition truncateCondition, charset string, recursive bool) error {
+func runTruncate(inputPath string, outputPath string, condition truncateCondition, encoding string, recursive bool) error {
 
-	truncator, err := newTruncator(condition, charset)
+	truncator, err := newTruncator(condition, encoding)
 	if err != nil {
 		return err
 	}
@@ -81,14 +81,14 @@ func runTruncate(inputPath string, outputPath string, condition truncateConditio
 	return handle(inputPath, outputPath, process, recursive)
 }
 
-func newTruncator(condition truncateCondition, charset string) (truncator.Truncator, error) {
+func newTruncator(condition truncateCondition, encoding string) (truncator.Truncator, error) {
 
 	if condition.byteNum != nil {
 		return truncator.NewByteTruncator(*condition.byteNum), nil
 	} else if condition.charNum != nil {
-		return truncator.NewCharTruncator(*condition.charNum, charset)
+		return truncator.NewCharTruncator(*condition.charNum, encoding)
 	} else {
-		return truncator.NewLineTruncator(*condition.lineNum, charset)
+		return truncator.NewLineTruncator(*condition.lineNum, encoding)
 	}
 }
 

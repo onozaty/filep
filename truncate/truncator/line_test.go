@@ -266,7 +266,7 @@ func TestNewLineTruncator_OutputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewLineTruncator_InvalidCharset(t *testing.T) {
+func TestNewLineTruncator_InvalidEncoding(t *testing.T) {
 
 	// ACT
 	_, err := NewLineTruncator(9, "utf")

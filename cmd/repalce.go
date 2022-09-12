@@ -41,7 +41,7 @@ func newReplaceCmd() *cobra.Command {
 			}
 
 			recursive, _ := cmd.Flags().GetBool("recursive")
-			charset, _ := cmd.Flags().GetString("charset")
+			encoding, _ := cmd.Flags().GetString("encoding")
 
 			var regex *regexp.Regexp
 			if targetRegex != "" {
@@ -64,7 +64,7 @@ func newReplaceCmd() *cobra.Command {
 					targetStr:   targetStr,
 					replacement: replacement,
 				},
-				charset,
+				encoding,
 				recursive)
 		},
 	}
@@ -81,7 +81,7 @@ func newReplaceCmd() *cobra.Command {
 
 	replaceCmd.Flags().BoolP("escape", "", false, "Enable escape sequence.")
 	replaceCmd.Flags().BoolP("recursive", "", false, "Recursively traverse the input dir.")
-	replaceCmd.Flags().StringP("charset", "", "UTF-8", "Charset.")
+	replaceCmd.Flags().StringP("encoding", "", "UTF-8", "Encoding.")
 
 	return replaceCmd
 }
@@ -92,9 +92,9 @@ type replaceCondition struct {
 	replacement string
 }
 
-func runReplace(inputPath string, outputPath string, condition replaceCondition, charset string, recursive bool) error {
+func runReplace(inputPath string, outputPath string, condition replaceCondition, encoding string, recursive bool) error {
 
-	encoder, err := encoder.NewEncoder(charset)
+	encoder, err := encoder.NewEncoder(encoding)
 	if err != nil {
 		return err
 	}

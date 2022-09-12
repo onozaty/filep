@@ -324,7 +324,7 @@ func TestReplaceCmd_Escape_Regex(t *testing.T) {
 	assert.Equal(t, "a ", replaced)
 }
 
-func TestReplaceCmd_Charset_UTF8(t *testing.T) {
+func TestReplaceCmd_Encoding_UTF8(t *testing.T) {
 
 	// ARRANGE
 	d := test.CreateTempDir(t)
@@ -339,7 +339,7 @@ func TestReplaceCmd_Charset_UTF8(t *testing.T) {
 		"-i", input,
 		"-r", "あ.う",
 		"-t", "",
-		"--charset", "utf-8",
+		"--encoding", "utf-8",
 		"-o", output,
 	})
 
@@ -353,7 +353,7 @@ func TestReplaceCmd_Charset_UTF8(t *testing.T) {
 	assert.Equal(t, "えお", replaced)
 }
 
-func TestReplaceCmd_Charset_SJIS(t *testing.T) {
+func TestReplaceCmd_Encoding_SJIS(t *testing.T) {
 
 	// ARRANGE
 	d := test.CreateTempDir(t)
@@ -368,7 +368,7 @@ func TestReplaceCmd_Charset_SJIS(t *testing.T) {
 		"-i", input,
 		"-r", "あ.う",
 		"-t", "",
-		"--charset", "sjis",
+		"--encoding", "sjis",
 		"-o", output,
 	})
 
@@ -382,7 +382,7 @@ func TestReplaceCmd_Charset_SJIS(t *testing.T) {
 	assert.Equal(t, "えお", replaced)
 }
 
-func TestReplaceCmd_Charset_Binary(t *testing.T) {
+func TestReplaceCmd_Encoding_Binary(t *testing.T) {
 
 	// ARRANGE
 	d := test.CreateTempDir(t)
@@ -397,7 +397,7 @@ func TestReplaceCmd_Charset_Binary(t *testing.T) {
 		"-i", input,
 		"-s", "x00x01",
 		"-t", "",
-		"--charset", "binary",
+		"--encoding", "binary",
 		"-o", output,
 	})
 
@@ -411,7 +411,7 @@ func TestReplaceCmd_Charset_Binary(t *testing.T) {
 	assert.Equal(t, []byte{0x00, 0x02, 0xF0}, replaced)
 }
 
-func TestReplaceCmd_Charset_Invalid(t *testing.T) {
+func TestReplaceCmd_Encoding_Invalid(t *testing.T) {
 
 	// ARRANGE
 	d := test.CreateTempDir(t)
@@ -426,7 +426,7 @@ func TestReplaceCmd_Charset_Invalid(t *testing.T) {
 		"-i", input,
 		"-r", "x",
 		"-t", "",
-		"--charset", "xxxx", // 存在しないCharset
+		"--encoding", "xxxx", // 存在しないEncoding
 		"-o", output,
 	})
 

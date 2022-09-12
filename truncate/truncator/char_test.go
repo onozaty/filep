@@ -185,7 +185,7 @@ func TestNewCharTruncator_OutputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewCharTruncator_InvalidCharset(t *testing.T) {
+func TestNewCharTruncator_InvalidEncoding(t *testing.T) {
 
 	// ACT
 	_, err := NewCharTruncator(9, "utf")

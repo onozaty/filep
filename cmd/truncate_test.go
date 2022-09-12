@@ -298,5 +298,5 @@ func TestTruncateCmd_Dir_Recursive(t *testing.T) {
 	}
 }
 
-// TODO charset
+// TODO encoding
 // TODO 異常系

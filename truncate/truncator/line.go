@@ -16,9 +16,9 @@ type lineTruncator struct {
 	encoding encoding.Encoding
 }
 
-func NewLineTruncator(lineNum int64, charset string) (Truncator, error) {
+func NewLineTruncator(lineNum int64, encodingName string) (Truncator, error) {
 
-	encoding, err := enc.Encoding(charset)
+	encoding, err := enc.Encoding(encodingName)
 	if err != nil {
 		return nil, err
 	}
