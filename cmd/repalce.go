@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"strconv"
@@ -43,6 +44,10 @@ func newReplaceCmd() *cobra.Command {
 			recursive, _ := cmd.Flags().GetBool("recursive")
 			encoding, _ := cmd.Flags().GetString("encoding")
 
+			if targetStr == "" && targetRegex == "" {
+				return fmt.Errorf("--regex or --string must be specified")
+			}
+
 			var regex *regexp.Regexp
 			if targetRegex != "" {
 				regex, err = regexp.Compile(targetRegex)
@@ -50,8 +55,6 @@ func newReplaceCmd() *cobra.Command {
 					return errors.WithMessage(err, "regular expression specified in --regex is invalid")
 				}
 			}
-
-			// TODO regex と string のどちらかが指定されていることをチェック
 
 			// 引数の解析に成功した時点で、エラーが起きてもUsageは表示しない
 			cmd.SilenceUsage = true

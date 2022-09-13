@@ -461,7 +461,7 @@ func TestReplaceCmd_InvalidRegex(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	assert.Equal(t, "regular expression specified in --regex is invalid: error parsing regexp: missing closing ]: `[a`", err.Error())
+	assert.EqualError(t, err, "regular expression specified in --regex is invalid: error parsing regexp: missing closing ]: `[a`")
 }
 
 func TestReplaceCmd_InvalidEscape_Regex(t *testing.T) {
@@ -488,7 +488,7 @@ func TestReplaceCmd_InvalidEscape_Regex(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	assert.Equal(t, "could not parse value \\x of flag regex: invalid syntax", err.Error())
+	assert.EqualError(t, err, "could not parse value \\x of flag regex: invalid syntax")
 }
 
 func TestReplaceCmd_InvalidEscape_String(t *testing.T) {
@@ -515,7 +515,7 @@ func TestReplaceCmd_InvalidEscape_String(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	assert.Equal(t, "could not parse value \\x of flag string: invalid syntax", err.Error())
+	assert.EqualError(t, err, "could not parse value \\x of flag string: invalid syntax")
 }
 
 func TestReplaceCmd_InvalidEscape_Replacement(t *testing.T) {
@@ -542,7 +542,33 @@ func TestReplaceCmd_InvalidEscape_Replacement(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	assert.Equal(t, "could not parse value \\ of flag replacement: invalid syntax", err.Error())
+	assert.EqualError(t, err, "could not parse value \\ of flag replacement: invalid syntax")
+}
+
+func TestReplaceCmd_NoneRegexAndString(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateFileWriteString(t, d, "input.txt", "")
+	output := filepath.Join(d, "output.txt")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"replace",
+		"-i", input,
+		// -s も -r も指定しない
+		"-t", "",
+		"-o", output,
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.Error(t, err)
+	assert.EqualError(t, err, "--regex or --string must be specified")
 }
 
 func TestReplaceCmd_InputNotFound(t *testing.T) {
@@ -568,7 +594,11 @@ func TestReplaceCmd_InputNotFound(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	// 実行環境によってファイルが存在しない場合のエラーメッセージが異なるので、Errorだけで判定
+	assert.True(t, os.IsNotExist(err))
+
+	pathErr, ok := err.(*os.PathError)
+	require.True(t, ok)
+	assert.Equal(t, input, pathErr.Path)
 }
 
 func TestReplaceCmd_OutputNotFound(t *testing.T) {
@@ -594,5 +624,9 @@ func TestReplaceCmd_OutputNotFound(t *testing.T) {
 
 	// ASSERT
 	require.Error(t, err)
-	// 実行環境によってファイルが存在しない場合のエラーメッセージが異なるので、Errorだけで判定
+	assert.True(t, os.IsNotExist(err))
+
+	pathErr, ok := err.(*os.PathError)
+	require.True(t, ok)
+	assert.Equal(t, output, pathErr.Path)
 }
