@@ -434,7 +434,6 @@ func TestReplaceCmd_Encoding_Invalid(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.Error(t, err)
 	assert.EqualError(t, err, "xxxx is invalid: htmlindex: invalid encoding name")
 }
 
@@ -460,7 +459,6 @@ func TestReplaceCmd_InvalidRegex(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.Error(t, err)
 	assert.EqualError(t, err, "regular expression specified in --regex is invalid: error parsing regexp: missing closing ]: `[a`")
 }
 
@@ -487,7 +485,6 @@ func TestReplaceCmd_InvalidEscape_Regex(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.Error(t, err)
 	assert.EqualError(t, err, "could not parse value \\x of flag regex: invalid syntax")
 }
 
@@ -514,7 +511,6 @@ func TestReplaceCmd_InvalidEscape_String(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.Error(t, err)
 	assert.EqualError(t, err, "could not parse value \\x of flag string: invalid syntax")
 }
 
@@ -541,7 +537,6 @@ func TestReplaceCmd_InvalidEscape_Replacement(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.Error(t, err)
 	assert.EqualError(t, err, "could not parse value \\ of flag replacement: invalid syntax")
 }
 
@@ -567,7 +562,6 @@ func TestReplaceCmd_NoneRegexAndString(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.Error(t, err)
 	assert.EqualError(t, err, "--regex or --string must be specified")
 }
 

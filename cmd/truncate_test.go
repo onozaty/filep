@@ -8,6 +8,7 @@ import (
 	"github.com/onozaty/filep/test"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"golang.org/x/text/encoding/japanese"
 )
 
 func TestTruncateCmd_File_Byte(t *testing.T) {
@@ -298,5 +299,165 @@ func TestTruncateCmd_Dir_Recursive(t *testing.T) {
 	}
 }
 
-// TODO encoding
-// TODO 異常系
+func TestTruncateCmd_File_Char_SJIS(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateFileWriteBytes(t, d, "input", test.StringToByte(t, "あいうえお", japanese.ShiftJIS))
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-c", "3",
+		"-o", output,
+		"--encoding", "sjis",
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.NoError(t, err)
+
+	truncated := test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS)
+	assert.Equal(t, "あいう", truncated)
+}
+
+func TestTruncateCmd_File_Line_SJIS(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateFileWriteBytes(t, d, "input", test.StringToByte(t, "あ\nい\r\nう\nえ\nお", japanese.ShiftJIS))
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-l", "2",
+		"-o", output,
+		"--encoding", "sjis",
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.NoError(t, err)
+
+	truncated := test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS)
+	assert.Equal(t, "あ\nい\r\n", truncated)
+}
+
+func TestTruncateCmd_NoNumberSpecified(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateFileWriteString(t, d, "input", "")
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		// -b、-c、-l のいずれも指定しない
+		"-o", output,
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.EqualError(t, err, "no number is specified")
+}
+
+func TestTruncateCmd_InvalidEncoding(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateFileWriteString(t, d, "input", "")
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-l", "2",
+		"-o", output,
+		"--encoding", "xxxx",
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.EqualError(t, err, "xxxx is invalid: htmlindex: invalid encoding name")
+}
+
+func TestTruncateCmd_InputNotFound(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := filepath.Join(d, "input") // 存在しない
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-l", "2",
+		"-o", output,
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.Error(t, err)
+	assert.True(t, os.IsNotExist(err))
+
+	pathErr, ok := err.(*os.PathError)
+	require.True(t, ok)
+	assert.Equal(t, input, pathErr.Path)
+}
+
+func TestTruncateCmd_OutputNotFound(t *testing.T) {
+
+	// ARRANGE
+	d := test.CreateTempDir(t)
+	defer os.RemoveAll(d)
+
+	input := test.CreateDir(t, d, "input")
+	output := filepath.Join(d, "a", "b") // 親ディレクトリ自体が無い
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-l", "2",
+		"-o", output,
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.Error(t, err)
+	assert.True(t, os.IsNotExist(err))
+
+	pathErr, ok := err.(*os.PathError)
+	require.True(t, ok)
+	assert.Equal(t, output, pathErr.Path)
+}
