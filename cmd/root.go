@@ -15,10 +15,14 @@ func newRootCmd() *cobra.Command {
 			_ = cmd.Help()
 		},
 		SilenceErrors: true,
+		CompletionOptions: cobra.CompletionOptions{
+			HiddenDefaultCmd: true,
+		},
 	}
 
 	rootCmd.AddCommand(newReplaceCmd())
 	rootCmd.AddCommand(newTruncateCmd())
+	rootCmd.AddCommand(newVersionCmd())
 
 	for _, c := range rootCmd.Commands() {
 		// フラグ以外は受け付けないように
