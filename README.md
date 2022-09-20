@@ -65,10 +65,10 @@ String is specified by `-s`.
 $ filep replace -i input.txt -o output.txt -s a -t z
 ```
 
-To treat backslash as an escape sequence, specify `-e`.
+To treat backslash as an escape sequence, specify `--escape`.
 
 ```
-$ filep replace -i input.txt -o output.txt -s "\u3000" -e -t ""
+$ filep replace -i input.txt -o output.txt -s "\u3000" -t "" --escape
 ```
 
 #### Input / Output
@@ -111,7 +111,7 @@ A hexadecimal character represents a byte with three characters prefixed by `x`,
 To remove two consecutive bytes, such as 0x00 0x01, specify as follows
 
 ```
-$ filep replace -i input.txt -o output.txt -s x00x01 -t "" --encoding
+$ filep replace -i input.txt -o output.txt -s x00x01 -t "" --encoding binary
 ```
 
 ## truncate
