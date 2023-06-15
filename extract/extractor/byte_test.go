@@ -1,4 +1,4 @@
-package truncator
+package extractor
 
 import (
 	"os"
@@ -10,22 +10,21 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewByteTruncator(t *testing.T) {
+func TestNewByteExtractor(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(
 		t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A})
 
 	{
-		output := filepath.Join(d, "output10")
+		output := filepath.Join(d, "output1-10")
 
 		// ACT
-		truncator, err := NewByteTruncator(10)
+		extractor, err := NewByteExtractor(1, 10)
 		require.NoError(t, err)
-		err = truncator.Truncate(input, output)
+		err = extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -35,27 +34,27 @@ func TestNewByteTruncator(t *testing.T) {
 			test.ReadBytes(t, output))
 	}
 	{
-		output := filepath.Join(d, "output9")
+		output := filepath.Join(d, "output2-9")
 
 		// ACT
-		truncator, err := NewByteTruncator(9)
+		extractor, err := NewByteExtractor(2, 9)
 		require.NoError(t, err)
-		err = truncator.Truncate(input, output)
+		err = extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			[]byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09},
+			[]byte{0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09},
 			test.ReadBytes(t, output))
 	}
 	{
-		output := filepath.Join(d, "output11")
+		output := filepath.Join(d, "output1-11")
 
 		// ACT
-		truncator, err := NewByteTruncator(11)
+		extractor, err := NewByteExtractor(1, 11)
 		require.NoError(t, err)
-		err = truncator.Truncate(input, output)
+		err = extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -65,12 +64,12 @@ func TestNewByteTruncator(t *testing.T) {
 			test.ReadBytes(t, output))
 	}
 	{
-		output := filepath.Join(d, "output0")
+		output := filepath.Join(d, "output12-13")
 
 		// ACT
-		truncator, err := NewByteTruncator(0)
+		extractor, err := NewByteExtractor(12, 13)
 		require.NoError(t, err)
-		err = truncator.Truncate(input, output)
+		err = extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -81,19 +80,18 @@ func TestNewByteTruncator(t *testing.T) {
 	}
 }
 
-func TestNewByteTruncator_InputFileNotFound(t *testing.T) {
+func TestNewByteExtractor_InputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "xxxx")
 	output := filepath.Join(d, "output")
 
 	// ACT
-	truncator, err := NewByteTruncator(10)
+	extractor, err := NewByteExtractor(1, 10)
 	require.NoError(t, err)
-	err = truncator.Truncate(input, output)
+	err = extractor.Extract(input, output)
 
 	// ASSERT
 	require.Error(t, err)
@@ -102,23 +100,40 @@ func TestNewByteTruncator_InputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewByteTruncator_OutputFileNotFound(t *testing.T) {
+func TestNewByteExtractor_OutputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{})
 	output := filepath.Join(d, "non", "output")
 
 	// ACT
-	truncator, err := NewByteTruncator(10)
+	extractor, err := NewByteExtractor(1, 10)
 	require.NoError(t, err)
-	err = truncator.Truncate(input, output)
+	err = extractor.Extract(input, output)
 
 	// ASSERT
 	require.Error(t, err)
 	pathErr := err.(*os.PathError)
 	assert.Equal(t, output, pathErr.Path)
 	assert.Equal(t, "open", pathErr.Op)
+}
+
+func TestNewByteExtractor_InvalidRange_Start(t *testing.T) {
+
+	// ACT
+	_, err := NewByteExtractor(0, 10)
+
+	// ASSERT
+	assert.EqualError(t, err, "invalid range: start = 0, end = 10")
+}
+
+func TestNewByteExtractor_InvalidRange_End(t *testing.T) {
+
+	// ACT
+	_, err := NewByteExtractor(10, 9)
+
+	// ASSERT
+	assert.EqualError(t, err, "invalid range: start = 10, end = 9")
 }

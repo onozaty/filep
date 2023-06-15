@@ -1,66 +1,21 @@
 package truncator
 
-import (
-	"bufio"
-	"io"
-	"os"
+import "github.com/onozaty/filep/extract/extractor"
 
-	enc "github.com/onozaty/filep/encoding"
+func NewCharTruncator(charNum int64, encodingName string) (*Truncator, error) {
 
-	"golang.org/x/text/encoding"
-	"golang.org/x/text/transform"
-)
+	if charNum == 0 {
+		// 0を指定された場合、空ファイルを作るだけ
+		return newEmptyTruncator()
+	}
 
-type charTruncator struct {
-	charNum  int64
-	encoding encoding.Encoding
-}
-
-func NewCharTruncator(charNum int64, encodingName string) (Truncator, error) {
-
-	encoding, err := enc.Encoding(encodingName)
+	// 1文字目から取り出すことで切り捨てと同じ扱いに
+	extractor, err := extractor.NewCharExtractor(1, charNum, encodingName)
 	if err != nil {
 		return nil, err
 	}
 
-	return &charTruncator{
-		charNum:  charNum,
-		encoding: encoding,
+	return &Truncator{
+		extractor: extractor,
 	}, nil
-}
-
-func (t *charTruncator) Truncate(inputFilePath string, outputFilePath string) error {
-
-	input, err := os.Open(inputFilePath)
-	if err != nil {
-		return err
-	}
-	defer input.Close()
-
-	out, err := os.Create(outputFilePath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	reader := bufio.NewReader(transform.NewReader(input, t.encoding.NewDecoder()))
-	writer := bufio.NewWriter(transform.NewWriter(out, t.encoding.NewEncoder()))
-
-	// 指定文字数分読み込み
-	for i := int64(0); i < t.charNum; i++ {
-		c, _, err := reader.ReadRune()
-		if err == io.EOF {
-			// 終端ならばそこまでで終了
-			break
-		}
-		if err != nil {
-			return err
-		}
-
-		if _, err := writer.WriteRune(c); err != nil {
-			return err
-		}
-	}
-
-	return writer.Flush()
 }

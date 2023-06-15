@@ -81,10 +81,10 @@ func runTruncate(inputPath string, outputPath string, condition truncateConditio
 	return handle(inputPath, outputPath, process, recursive)
 }
 
-func newTruncator(condition truncateCondition, encoding string) (truncator.Truncator, error) {
+func newTruncator(condition truncateCondition, encoding string) (*truncator.Truncator, error) {
 
 	if condition.byteNum != nil {
-		return truncator.NewByteTruncator(*condition.byteNum), nil
+		return truncator.NewByteTruncator(*condition.byteNum)
 	} else if condition.charNum != nil {
 		return truncator.NewCharTruncator(*condition.charNum, encoding)
 	} else {
