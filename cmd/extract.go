@@ -24,7 +24,7 @@ func newExtractCmd() *cobra.Command {
 			// endの指定が無かった場合には、ファイル終端までを対象にするためにint64の最大値を入れておく
 			end := getFlagInt64(cmd.Flags(), "end", math.MaxInt64)
 
-			extractType, err := getFlagExtractType(cmd.Flags())
+			countingType, err := getFlagCountingType(cmd.Flags())
 			if err != nil {
 				return err
 			}
@@ -46,9 +46,9 @@ func newExtractCmd() *cobra.Command {
 				inputPath,
 				outputPath,
 				extractCondition{
-					start:       start,
-					end:         end,
-					extractType: extractType,
+					start:        start,
+					end:          end,
+					countingType: countingType,
 				},
 				encoding,
 				recursive)
@@ -73,18 +73,10 @@ func newExtractCmd() *cobra.Command {
 	return extractCmd
 }
 
-type extractType int
-
-const (
-	Byte extractType = iota
-	Char
-	Line
-)
-
 type extractCondition struct {
-	start       int64
-	end         int64
-	extractType extractType
+	start        int64
+	end          int64
+	countingType CountingType
 }
 
 func runExtract(inputPath string, outputPath string, condition extractCondition, encoding string, recursive bool) error {
@@ -103,15 +95,15 @@ func runExtract(inputPath string, outputPath string, condition extractCondition,
 
 func newExtractor(condition extractCondition, encoding string) (extractor.Extractor, error) {
 
-	switch condition.extractType {
-	case Byte:
+	switch condition.countingType {
+	case Bytes:
 		return extractor.NewByteExtractor(condition.start, condition.end)
-	case Char:
+	case Chars:
 		return extractor.NewCharExtractor(condition.start, condition.end, encoding)
-	case Line:
+	case Lines:
 		return extractor.NewLineExtractor(condition.start, condition.end, encoding)
 	default:
-		return nil, fmt.Errorf("invalid extract type: %d", condition.extractType)
+		return nil, fmt.Errorf("invalid counting type: %d", condition.countingType)
 	}
 }
 
@@ -123,34 +115,4 @@ func getFlagInt64(f *pflag.FlagSet, name string, defaultValue int64) int64 {
 	}
 
 	return defaultValue
-}
-
-func getFlagExtractType(f *pflag.FlagSet) (extractType, error) {
-
-	handleByte, _ := f.GetBool("byte")
-	handleChar, _ := f.GetBool("char")
-	handleLine, _ := f.GetBool("line")
-
-	selected := 0
-	if handleByte {
-		selected++
-	}
-	if handleChar {
-		selected++
-	}
-	if handleLine {
-		selected++
-	}
-
-	if selected != 1 {
-		return 0, fmt.Errorf("specify one of the following: -b, -c, -l")
-	}
-
-	if handleByte {
-		return Byte, nil
-	}
-	if handleChar {
-		return Char, nil
-	}
-	return Line, nil
 }

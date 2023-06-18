@@ -37,6 +37,32 @@ func TestTruncateCmd_File_Byte(t *testing.T) {
 	assert.Equal(t, []byte{0x01, 0x02}, truncated)
 }
 
+func TestTruncateCmd_File_Byte_Empty(t *testing.T) {
+
+	// ARRANGE
+	d := t.TempDir()
+
+	input := test.CreateFileWriteBytes(t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05})
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-b", "0",
+		"-o", output,
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.NoError(t, err)
+
+	truncated := test.ReadBytes(t, output)
+	assert.Equal(t, []byte{}, truncated)
+}
+
 func TestTruncateCmd_File_Char(t *testing.T) {
 
 	// ARRANGE
@@ -365,7 +391,7 @@ func TestTruncateCmd_NoNumberSpecified(t *testing.T) {
 	err := rootCmd.Execute()
 
 	// ASSERT
-	require.EqualError(t, err, "no number is specified")
+	require.EqualError(t, err, "specify one of the following: -b, -c, -l")
 }
 
 func TestTruncateCmd_InvalidEncoding(t *testing.T) {
@@ -446,4 +472,27 @@ func TestTruncateCmd_OutputNotFound(t *testing.T) {
 	pathErr, ok := err.(*os.PathError)
 	require.True(t, ok)
 	assert.Equal(t, output, pathErr.Path)
+}
+
+func TestTruncateCmd_InvalidNumber(t *testing.T) {
+
+	// ARRANGE
+	d := t.TempDir()
+
+	input := test.CreateFileWriteString(t, d, "input", "")
+	output := filepath.Join(d, "output")
+
+	rootCmd := newRootCmd()
+	rootCmd.SetArgs([]string{
+		"truncate",
+		"-i", input,
+		"-l", "-1",
+		"-o", output,
+	})
+
+	// ACT
+	err := rootCmd.Execute()
+
+	// ASSERT
+	require.EqualError(t, err, "number must be greater than or equal to 0")
 }
