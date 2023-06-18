@@ -13,8 +13,7 @@ import (
 func TestNewByteTruncator(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(
 		t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A})
@@ -84,8 +83,7 @@ func TestNewByteTruncator(t *testing.T) {
 func TestNewByteTruncator_InputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "xxxx")
 	output := filepath.Join(d, "output")
@@ -105,8 +103,7 @@ func TestNewByteTruncator_InputFileNotFound(t *testing.T) {
 func TestNewByteTruncator_OutputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{})
 	output := filepath.Join(d, "non", "output")

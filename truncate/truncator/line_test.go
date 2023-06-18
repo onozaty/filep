@@ -14,8 +14,7 @@ import (
 func TestNewLineTruncator(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(
 		t, d, "input", "1\n2\r\n3\n4\n\n6\r\n7xxxx\n8\n9\n10\n")
@@ -81,8 +80,7 @@ func TestNewLineTruncator(t *testing.T) {
 func TestNewLineTruncator_改行無しで終了(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(
 		t, d, "input", "\n2\n3\n4")
@@ -162,8 +160,7 @@ func TestNewLineTruncator_改行無しで終了(t *testing.T) {
 func TestNewLineTruncator_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(
 		t, d, "input.txt", test.StringToByte(t, "あい\nうえ\nお\nかき\nく\n", japanese.ShiftJIS))
@@ -229,8 +226,7 @@ func TestNewLineTruncator_SJIS(t *testing.T) {
 func TestNewLineTruncator_InputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "xxxx")
 	output := filepath.Join(d, "output")
@@ -249,8 +245,7 @@ func TestNewLineTruncator_InputFileNotFound(t *testing.T) {
 func TestNewLineTruncator_OutputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "non", "output")

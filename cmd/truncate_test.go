@@ -14,8 +14,7 @@ import (
 func TestTruncateCmd_File_Byte(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05})
 	output := filepath.Join(d, "output")
@@ -41,8 +40,7 @@ func TestTruncateCmd_File_Byte(t *testing.T) {
 func TestTruncateCmd_File_Char(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "1234567890")
 	output := filepath.Join(d, "output")
@@ -68,8 +66,7 @@ func TestTruncateCmd_File_Char(t *testing.T) {
 func TestTruncateCmd_File_Line(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "1\n2\r\n3\n4\n5\n")
 	output := filepath.Join(d, "output")
@@ -95,8 +92,7 @@ func TestTruncateCmd_File_Line(t *testing.T) {
 func TestTruncateCmd_Dir_Byte(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -136,8 +132,7 @@ func TestTruncateCmd_Dir_Byte(t *testing.T) {
 func TestTruncateCmd_Dir_Char(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -177,8 +172,7 @@ func TestTruncateCmd_Dir_Char(t *testing.T) {
 func TestTruncateCmd_Dir_Line(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -218,8 +212,7 @@ func TestTruncateCmd_Dir_Line(t *testing.T) {
 func TestTruncateCmd_Dir_CreateOutputDir(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -247,8 +240,7 @@ func TestTruncateCmd_Dir_CreateOutputDir(t *testing.T) {
 func TestTruncateCmd_Dir_Recursive(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 	test.CreateFileWriteString(t, input, "1.txt", "123")
@@ -302,8 +294,7 @@ func TestTruncateCmd_Dir_Recursive(t *testing.T) {
 func TestTruncateCmd_File_Char_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", test.StringToByte(t, "あいうえお", japanese.ShiftJIS))
 	output := filepath.Join(d, "output")
@@ -330,8 +321,7 @@ func TestTruncateCmd_File_Char_SJIS(t *testing.T) {
 func TestTruncateCmd_File_Line_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", test.StringToByte(t, "あ\nい\r\nう\nえ\nお", japanese.ShiftJIS))
 	output := filepath.Join(d, "output")
@@ -358,8 +348,7 @@ func TestTruncateCmd_File_Line_SJIS(t *testing.T) {
 func TestTruncateCmd_NoNumberSpecified(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "output")
@@ -382,8 +371,7 @@ func TestTruncateCmd_NoNumberSpecified(t *testing.T) {
 func TestTruncateCmd_InvalidEncoding(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "output")
@@ -407,8 +395,7 @@ func TestTruncateCmd_InvalidEncoding(t *testing.T) {
 func TestTruncateCmd_InputNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "input") // 存在しない
 	output := filepath.Join(d, "output")
@@ -436,8 +423,7 @@ func TestTruncateCmd_InputNotFound(t *testing.T) {
 func TestTruncateCmd_OutputNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 	output := filepath.Join(d, "a", "b") // 親ディレクトリ自体が無い

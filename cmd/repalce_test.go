@@ -14,8 +14,7 @@ import (
 func TestReplaceCmd_File_Regex(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "abc\nabc\naa")
 	output := filepath.Join(d, "output.txt")
@@ -42,8 +41,7 @@ func TestReplaceCmd_File_Regex(t *testing.T) {
 func TestReplaceCmd_File_String(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "aa.ab.ac.ad.a.b.c.d")
 	output := filepath.Join(d, "output.txt")
@@ -70,8 +68,7 @@ func TestReplaceCmd_File_String(t *testing.T) {
 func TestReplaceCmd_Dir_Regex(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -112,8 +109,7 @@ func TestReplaceCmd_Dir_Regex(t *testing.T) {
 func TestReplaceCmd_File_Regex_Japanese(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "あいうえおかきくけこ")
 	output := filepath.Join(d, "output.txt")
@@ -140,8 +136,7 @@ func TestReplaceCmd_File_Regex_Japanese(t *testing.T) {
 func TestReplaceCmd_Dir_String(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -182,8 +177,7 @@ func TestReplaceCmd_Dir_String(t *testing.T) {
 func TestReplaceCmd_Dir_CreateOutputDir(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -213,8 +207,7 @@ func TestReplaceCmd_Dir_CreateOutputDir(t *testing.T) {
 func TestReplaceCmd_Dir_Recursive(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 	test.CreateFileWriteString(t, input, "1.txt", "abc")
@@ -269,8 +262,7 @@ func TestReplaceCmd_Dir_Recursive(t *testing.T) {
 func TestReplaceCmd_Escape_String(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "1\n2\n")
 	output := filepath.Join(d, "output.txt")
@@ -298,8 +290,7 @@ func TestReplaceCmd_Escape_String(t *testing.T) {
 func TestReplaceCmd_Escape_Regex(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "a　　　")
 	output := filepath.Join(d, "output.txt")
@@ -327,8 +318,7 @@ func TestReplaceCmd_Escape_Regex(t *testing.T) {
 func TestReplaceCmd_Encoding_UTF8(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "あいうえお")
 	output := filepath.Join(d, "output.txt")
@@ -356,8 +346,7 @@ func TestReplaceCmd_Encoding_UTF8(t *testing.T) {
 func TestReplaceCmd_Encoding_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input.txt", test.StringToByte(t, "あいうえお", japanese.ShiftJIS))
 	output := filepath.Join(d, "output.txt")
@@ -385,8 +374,7 @@ func TestReplaceCmd_Encoding_SJIS(t *testing.T) {
 func TestReplaceCmd_Encoding_Binary(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input.txt", []byte{0x00, 0x01, 0x00, 0x02, 0x00, 0x01, 0xF0})
 	output := filepath.Join(d, "output.txt")
@@ -414,8 +402,7 @@ func TestReplaceCmd_Encoding_Binary(t *testing.T) {
 func TestReplaceCmd_Encoding_Invalid(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "")
 	output := filepath.Join(d, "output.txt")
@@ -440,8 +427,7 @@ func TestReplaceCmd_Encoding_Invalid(t *testing.T) {
 func TestReplaceCmd_InvalidRegex(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "")
 	output := filepath.Join(d, "output.txt")
@@ -465,8 +451,7 @@ func TestReplaceCmd_InvalidRegex(t *testing.T) {
 func TestReplaceCmd_InvalidEscape_Regex(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "")
 	output := filepath.Join(d, "output.txt")
@@ -491,8 +476,7 @@ func TestReplaceCmd_InvalidEscape_Regex(t *testing.T) {
 func TestReplaceCmd_InvalidEscape_String(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "")
 	output := filepath.Join(d, "output.txt")
@@ -517,8 +501,7 @@ func TestReplaceCmd_InvalidEscape_String(t *testing.T) {
 func TestReplaceCmd_InvalidEscape_Replacement(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "")
 	output := filepath.Join(d, "output.txt")
@@ -543,8 +526,7 @@ func TestReplaceCmd_InvalidEscape_Replacement(t *testing.T) {
 func TestReplaceCmd_NoneRegexAndString(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input.txt", "")
 	output := filepath.Join(d, "output.txt")
@@ -568,8 +550,7 @@ func TestReplaceCmd_NoneRegexAndString(t *testing.T) {
 func TestReplaceCmd_InputNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "input") // 存在しない
 	output := filepath.Join(d, "output")
@@ -598,8 +579,7 @@ func TestReplaceCmd_InputNotFound(t *testing.T) {
 func TestReplaceCmd_OutputNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 	output := filepath.Join(d, "a", "b") // 親ディレクトリ自体が無い

@@ -14,8 +14,7 @@ import (
 func TestExtractCmd_File_Byte(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05})
 	output := filepath.Join(d, "output")
@@ -43,8 +42,7 @@ func TestExtractCmd_File_Byte(t *testing.T) {
 func TestExtractCmd_File_Byte_Start(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05})
 	output := filepath.Join(d, "output")
@@ -71,8 +69,7 @@ func TestExtractCmd_File_Byte_Start(t *testing.T) {
 func TestExtractCmd_File_Byte_End(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05})
 	output := filepath.Join(d, "output")
@@ -99,8 +96,7 @@ func TestExtractCmd_File_Byte_End(t *testing.T) {
 func TestExtractCmd_File_Byte_Over(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", []byte{0x01, 0x02, 0x03, 0x04, 0x05})
 	output := filepath.Join(d, "output")
@@ -127,8 +123,7 @@ func TestExtractCmd_File_Byte_Over(t *testing.T) {
 func TestExtractCmd_File_Char(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "あいうえおかきくけこ")
 	output := filepath.Join(d, "output")
@@ -156,8 +151,7 @@ func TestExtractCmd_File_Char(t *testing.T) {
 func TestExtractCmd_File_Char_Start(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "あいうえおかきくけこ")
 	output := filepath.Join(d, "output")
@@ -184,8 +178,7 @@ func TestExtractCmd_File_Char_Start(t *testing.T) {
 func TestExtractCmd_File_Char_End(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "あいうえおかきくけこ")
 	output := filepath.Join(d, "output")
@@ -212,8 +205,7 @@ func TestExtractCmd_File_Char_End(t *testing.T) {
 func TestExtractCmd_File_Char_Over(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "あいうえおかきくけこ")
 	output := filepath.Join(d, "output")
@@ -240,8 +232,7 @@ func TestExtractCmd_File_Char_Over(t *testing.T) {
 func TestExtractCmd_File_Line(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "1あ\n2\r\n3\n4\n5\n")
 	output := filepath.Join(d, "output")
@@ -269,8 +260,7 @@ func TestExtractCmd_File_Line(t *testing.T) {
 func TestExtractCmd_File_Line_Start(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "1あ\n2\r\n3\n4\n5\n")
 	output := filepath.Join(d, "output")
@@ -297,8 +287,7 @@ func TestExtractCmd_File_Line_Start(t *testing.T) {
 func TestExtractCmd_File_Line_End(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "1あ\n2\r\n3\n4\n5\n")
 	output := filepath.Join(d, "output")
@@ -325,8 +314,7 @@ func TestExtractCmd_File_Line_End(t *testing.T) {
 func TestExtractCmd_File_Line_Over(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "1あ\n2\r\n3\n4\n5\n")
 	output := filepath.Join(d, "output")
@@ -353,8 +341,7 @@ func TestExtractCmd_File_Line_Over(t *testing.T) {
 func TestExtractCmd_Dir_Byte(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -396,8 +383,7 @@ func TestExtractCmd_Dir_Byte(t *testing.T) {
 func TestExtractCmd_Dir_Char(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -439,8 +425,7 @@ func TestExtractCmd_Dir_Char(t *testing.T) {
 func TestExtractCmd_Dir_Line(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -482,8 +467,7 @@ func TestExtractCmd_Dir_Line(t *testing.T) {
 func TestExtractCmd_Dir_CreateOutputDir(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 
@@ -513,8 +497,7 @@ func TestExtractCmd_Dir_CreateOutputDir(t *testing.T) {
 func TestExtractCmd_Dir_Recursive(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 	test.CreateFileWriteString(t, input, "1.txt", "123")
@@ -570,8 +553,7 @@ func TestExtractCmd_Dir_Recursive(t *testing.T) {
 func TestExtractCmd_File_Char_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", test.StringToByte(t, "あいうえお", japanese.ShiftJIS))
 	output := filepath.Join(d, "output")
@@ -600,8 +582,7 @@ func TestExtractCmd_File_Char_SJIS(t *testing.T) {
 func TestExtractCmd_File_Line_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(t, d, "input", test.StringToByte(t, "あ\nい\r\nう\nえ\nお", japanese.ShiftJIS))
 	output := filepath.Join(d, "output")
@@ -630,8 +611,7 @@ func TestExtractCmd_File_Line_SJIS(t *testing.T) {
 func TestExtractCmd_NoNumberSpecified(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "output")
@@ -656,8 +636,7 @@ func TestExtractCmd_NoNumberSpecified(t *testing.T) {
 func TestExtractCmd_InvalidEncoding(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "output")
@@ -683,8 +662,7 @@ func TestExtractCmd_InvalidEncoding(t *testing.T) {
 func TestExtractCmd_InputNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "input") // 存在しない
 	output := filepath.Join(d, "output")
@@ -714,8 +692,7 @@ func TestExtractCmd_InputNotFound(t *testing.T) {
 func TestExtractCmd_OutputNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateDir(t, d, "input")
 	output := filepath.Join(d, "a", "b") // 親ディレクトリ自体が無い
@@ -745,8 +722,7 @@ func TestExtractCmd_OutputNotFound(t *testing.T) {
 func TestExtractCmd_InvalidStart(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "output")
@@ -771,8 +747,7 @@ func TestExtractCmd_InvalidStart(t *testing.T) {
 func TestExtractCmd_InvalidEnd(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "output")

@@ -14,8 +14,7 @@ import (
 func TestNewCharTruncator(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(
 		t, d, "input", "あいうえお12345")
@@ -81,8 +80,7 @@ func TestNewCharTruncator(t *testing.T) {
 func TestNewCharTruncator_SJIS(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteBytes(
 		t, d, "input.txt", test.StringToByte(t, "あいうえおかきくけこ", japanese.ShiftJIS))
@@ -148,8 +146,7 @@ func TestNewCharTruncator_SJIS(t *testing.T) {
 func TestNewCharTruncator_InputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := filepath.Join(d, "xxxx")
 	output := filepath.Join(d, "output")
@@ -168,8 +165,7 @@ func TestNewCharTruncator_InputFileNotFound(t *testing.T) {
 func TestNewCharTruncator_OutputFileNotFound(t *testing.T) {
 
 	// ARRANGE
-	d := test.CreateTempDir(t)
-	defer os.RemoveAll(d)
+	d := t.TempDir()
 
 	input := test.CreateFileWriteString(t, d, "input", "")
 	output := filepath.Join(d, "non", "output")
