@@ -1,4 +1,4 @@
-package truncator
+package extractor
 
 import (
 	"os"
@@ -11,7 +11,7 @@ import (
 	"golang.org/x/text/encoding/japanese"
 )
 
-func TestNewCharTruncator(t *testing.T) {
+func TestNewCharExtractor(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -20,11 +20,11 @@ func TestNewCharTruncator(t *testing.T) {
 		t, d, "input", "あいうえお12345")
 
 	{
-		output := filepath.Join(d, "output10")
+		output := filepath.Join(d, "output1-10")
 
 		// ACT
-		truncator, _ := NewCharTruncator(10, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewCharExtractor(1, 10, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -34,25 +34,25 @@ func TestNewCharTruncator(t *testing.T) {
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output9")
+		output := filepath.Join(d, "output2-9")
 
 		// ACT
-		truncator, _ := NewCharTruncator(9, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewCharExtractor(2, 9, "utf-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"あいうえお1234",
+			"いうえお1234",
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output11")
+		output := filepath.Join(d, "output1-11")
 
 		// ACT
-		truncator, _ := NewCharTruncator(11, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewCharExtractor(1, 11, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -62,11 +62,11 @@ func TestNewCharTruncator(t *testing.T) {
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output0")
-		truncator, _ := NewCharTruncator(0, "UTF-8")
+		output := filepath.Join(d, "output12-12")
+		extractor, _ := NewCharExtractor(12, 12, "UTF-8")
 
 		// ACT
-		err := truncator.Truncate(input, output)
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -77,7 +77,7 @@ func TestNewCharTruncator(t *testing.T) {
 	}
 }
 
-func TestNewCharTruncator_SJIS(t *testing.T) {
+func TestNewCharExtractor_SJIS(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -86,25 +86,25 @@ func TestNewCharTruncator_SJIS(t *testing.T) {
 		t, d, "input.txt", test.StringToByte(t, "あいうえおかきくけこ", japanese.ShiftJIS))
 
 	{
-		output := filepath.Join(d, "output10")
+		output := filepath.Join(d, "output5-10")
 
 		// ACT
-		truncator, _ := NewCharTruncator(10, "SJIS")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewCharExtractor(5, 10, "SJIS")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"あいうえおかきくけこ",
+			"おかきくけこ",
 			test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS))
 	}
 	{
-		output := filepath.Join(d, "output9")
-		truncator, _ := NewCharTruncator(9, "SJIS")
+		output := filepath.Join(d, "output1-9")
+		extractor, _ := NewCharExtractor(1, 9, "sjis")
 
 		// ACT
-		err := truncator.Truncate(input, output)
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -114,25 +114,25 @@ func TestNewCharTruncator_SJIS(t *testing.T) {
 			test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS))
 	}
 	{
-		output := filepath.Join(d, "output11")
+		output := filepath.Join(d, "output10-11")
 
 		// ACT
-		truncator, _ := NewCharTruncator(11, "SJIS")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewCharExtractor(10, 11, "SJIS")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"あいうえおかきくけこ",
+			"こ",
 			test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS))
 	}
 	{
-		output := filepath.Join(d, "output0")
-		truncator, _ := NewCharTruncator(0, "SJIS")
+		output := filepath.Join(d, "output15-16")
+		extractor, _ := NewCharExtractor(15, 16, "SJIS")
 
 		// ACT
-		err := truncator.Truncate(input, output)
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -143,7 +143,7 @@ func TestNewCharTruncator_SJIS(t *testing.T) {
 	}
 }
 
-func TestNewCharTruncator_InputFileNotFound(t *testing.T) {
+func TestNewCharExtractor_InputFileNotFound(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -152,8 +152,8 @@ func TestNewCharTruncator_InputFileNotFound(t *testing.T) {
 	output := filepath.Join(d, "output")
 
 	// ACT
-	truncator, _ := NewCharTruncator(9, "UTF-8")
-	err := truncator.Truncate(input, output)
+	extractor, _ := NewCharExtractor(1, 9, "UTF-8")
+	err := extractor.Extract(input, output)
 
 	// ASSERT
 	require.Error(t, err)
@@ -162,7 +162,7 @@ func TestNewCharTruncator_InputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewCharTruncator_OutputFileNotFound(t *testing.T) {
+func TestNewCharExtractor_OutputFileNotFound(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -171,8 +171,8 @@ func TestNewCharTruncator_OutputFileNotFound(t *testing.T) {
 	output := filepath.Join(d, "non", "output")
 
 	// ACT
-	truncator, _ := NewCharTruncator(9, "UTF-8")
-	err := truncator.Truncate(input, output)
+	extractor, _ := NewCharExtractor(1, 9, "UTF-8")
+	err := extractor.Extract(input, output)
 
 	// ASSERT
 	require.Error(t, err)
@@ -181,12 +181,30 @@ func TestNewCharTruncator_OutputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewCharTruncator_InvalidEncoding(t *testing.T) {
+func TestNewCharExtractor_InvalidEncoding(t *testing.T) {
 
 	// ACT
-	_, err := NewCharTruncator(9, "utf")
+	_, err := NewCharExtractor(1, 9, "utf")
 
 	// ASSERT
 	require.Error(t, err)
 	assert.EqualError(t, err, "utf is invalid: htmlindex: invalid encoding name")
+}
+
+func TestNewCharExtractor_InvalidRange_Start(t *testing.T) {
+
+	// ACT
+	_, err := NewCharExtractor(0, 10, "utf-8")
+
+	// ASSERT
+	assert.EqualError(t, err, "invalid range: start = 0, end = 10")
+}
+
+func TestNewCharExtractor_InvalidRange_End(t *testing.T) {
+
+	// ACT
+	_, err := NewCharExtractor(10, 9, "utf-8")
+
+	// ASSERT
+	assert.EqualError(t, err, "invalid range: start = 10, end = 9")
 }

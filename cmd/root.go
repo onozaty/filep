@@ -20,9 +20,12 @@ func newRootCmd() *cobra.Command {
 		},
 	}
 
-	rootCmd.AddCommand(newReplaceCmd())
-	rootCmd.AddCommand(newTruncateCmd())
-	rootCmd.AddCommand(newVersionCmd())
+	rootCmd.AddCommand(
+		newExtractCmd(),
+		newReplaceCmd(),
+		newTruncateCmd(),
+		newVersionCmd(),
+	)
 
 	for _, c := range rootCmd.Commands() {
 		// フラグ以外は受け付けないように
@@ -35,6 +38,8 @@ func newRootCmd() *cobra.Command {
 		c.Flags().SortFlags = false
 		c.InheritedFlags().SortFlags = false
 	}
+
+	cobra.EnableCommandSorting = false
 
 	return rootCmd
 }

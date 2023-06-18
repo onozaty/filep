@@ -1,40 +1,23 @@
 package truncator
 
 import (
-	"io"
-	"os"
+	"github.com/onozaty/filep/extract/extractor"
 )
 
-type byteTruncator struct {
-	byteNum int64
-}
+func NewByteTruncator(byteNum int64) (*Truncator, error) {
 
-func NewByteTruncator(byteNum int64) Truncator {
-
-	return &byteTruncator{
-		byteNum: byteNum,
+	if byteNum == 0 {
+		// 0を指定された場合、空ファイルを作るだけ
+		return newEmptyTruncator()
 	}
-}
 
-func (t *byteTruncator) Truncate(inputFilePath string, outputFilePath string) error {
-
-	input, err := os.Open(inputFilePath)
+	// 1バイト目から取り出すことで切り捨てと同じ扱いに
+	extractor, err := extractor.NewByteExtractor(1, byteNum)
 	if err != nil {
-		return err
-	}
-	defer input.Close()
-
-	out, err := os.Create(outputFilePath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
-
-	// 指定サイズ分コピー
-	_, err = io.CopyN(out, input, t.byteNum)
-	if err != nil && err != io.EOF { // 入力ファイルが指定サイズ未満の場合はEOFが返される(そこまでの書き込みでOK)
-		return err
+		return nil, err
 	}
 
-	return nil
+	return &Truncator{
+		extractor: extractor,
+	}, nil
 }

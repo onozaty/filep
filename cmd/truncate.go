@@ -6,7 +6,6 @@ import (
 	"github.com/onozaty/filep/truncate/truncator"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 )
 
 func newTruncateCmd() *cobra.Command {
@@ -19,15 +18,16 @@ func newTruncateCmd() *cobra.Command {
 			inputPath, _ := cmd.Flags().GetString("input")
 			outputPath, _ := cmd.Flags().GetString("output")
 
-			byteNum := getFlagTruncateNum(cmd.Flags(), "byte")
-			charNum := getFlagTruncateNum(cmd.Flags(), "char")
-			lineNum := getFlagTruncateNum(cmd.Flags(), "line")
+			countingType, number, err := getFlagCountingTypeWithNumber(cmd.Flags())
+			if err != nil {
+				return err
+			}
 
 			recursive, _ := cmd.Flags().GetBool("recursive")
 			encoding, _ := cmd.Flags().GetString("encoding")
 
-			if byteNum == nil && charNum == nil && lineNum == nil {
-				return fmt.Errorf("no number is specified")
+			if number < 0 {
+				return fmt.Errorf("number must be greater than or equal to 0")
 			}
 
 			// 引数の解析に成功した時点で、エラーが起きてもUsageは表示しない
@@ -37,9 +37,8 @@ func newTruncateCmd() *cobra.Command {
 				inputPath,
 				outputPath,
 				truncateCondition{
-					byteNum: byteNum,
-					charNum: charNum,
-					lineNum: lineNum,
+					countingType: countingType,
+					number:       number,
 				},
 				encoding,
 				recursive)
@@ -62,9 +61,8 @@ func newTruncateCmd() *cobra.Command {
 }
 
 type truncateCondition struct {
-	byteNum *int64
-	charNum *int64
-	lineNum *int64
+	countingType CountingType
+	number       int64
 }
 
 func runTruncate(inputPath string, outputPath string, condition truncateCondition, encoding string, recursive bool) error {
@@ -81,23 +79,16 @@ func runTruncate(inputPath string, outputPath string, condition truncateConditio
 	return handle(inputPath, outputPath, process, recursive)
 }
 
-func newTruncator(condition truncateCondition, encoding string) (truncator.Truncator, error) {
+func newTruncator(condition truncateCondition, encoding string) (*truncator.Truncator, error) {
 
-	if condition.byteNum != nil {
-		return truncator.NewByteTruncator(*condition.byteNum), nil
-	} else if condition.charNum != nil {
-		return truncator.NewCharTruncator(*condition.charNum, encoding)
-	} else {
-		return truncator.NewLineTruncator(*condition.lineNum, encoding)
+	switch condition.countingType {
+	case Bytes:
+		return truncator.NewByteTruncator(condition.number)
+	case Chars:
+		return truncator.NewCharTruncator(condition.number, encoding)
+	case Lines:
+		return truncator.NewLineTruncator(condition.number, encoding)
+	default:
+		return nil, fmt.Errorf("invalid counting type: %d", condition.countingType)
 	}
-}
-
-func getFlagTruncateNum(f *pflag.FlagSet, name string) *int64 {
-
-	if f.Changed(name) {
-		num, _ := f.GetInt64(name)
-		return &num
-	}
-
-	return nil
 }

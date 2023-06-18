@@ -28,14 +28,6 @@ func CreateFileWriteString(t *testing.T, dir string, name string, content string
 	return CreateFileWriteBytes(t, dir, name, []byte(content))
 }
 
-func CreateTempDir(t *testing.T) string {
-
-	tempDir, err := os.MkdirTemp("", "filep")
-	require.NoError(t, err)
-
-	return tempDir
-}
-
 func CreateDir(t *testing.T, parent string, name string) string {
 
 	dir := filepath.Join(parent, name)

@@ -1,4 +1,4 @@
-package truncator
+package extractor
 
 import (
 	"os"
@@ -11,7 +11,7 @@ import (
 	"golang.org/x/text/encoding/japanese"
 )
 
-func TestNewLineTruncator(t *testing.T) {
+func TestNewLineExtractor(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -20,11 +20,11 @@ func TestNewLineTruncator(t *testing.T) {
 		t, d, "input", "1\n2\r\n3\n4\n\n6\r\n7xxxx\n8\n9\n10\n")
 
 	{
-		output := filepath.Join(d, "output10")
+		output := filepath.Join(d, "output1-10")
 
 		// ACT
-		truncator, _ := NewLineTruncator(10, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 10, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -34,25 +34,25 @@ func TestNewLineTruncator(t *testing.T) {
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output9")
+		output := filepath.Join(d, "output2-9")
 
 		// ACT
-		truncator, _ := NewLineTruncator(9, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(2, 9, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"1\n2\r\n3\n4\n\n6\r\n7xxxx\n8\n9\n",
+			"2\r\n3\n4\n\n6\r\n7xxxx\n8\n9\n",
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output11")
+		output := filepath.Join(d, "output1-11")
 
 		// ACT
-		truncator, _ := NewLineTruncator(11, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 11, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -62,11 +62,11 @@ func TestNewLineTruncator(t *testing.T) {
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output0")
+		output := filepath.Join(d, "output11-12")
 
 		// ACT
-		truncator, _ := NewLineTruncator(0, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(11, 12, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -77,62 +77,62 @@ func TestNewLineTruncator(t *testing.T) {
 	}
 }
 
-func TestNewLineTruncator_改行無しで終了(t *testing.T) {
+func TestNewLineExtractor_改行無しで終了(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
 
 	input := test.CreateFileWriteString(
-		t, d, "input", "\n2\n3\n4")
+		t, d, "input", "\nあ2\n3\n4")
 
 	{
-		output := filepath.Join(d, "output4")
+		output := filepath.Join(d, "output1-4")
 
 		// ACT
-		truncator, _ := NewLineTruncator(4, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 4, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"\n2\n3\n4",
+			"\nあ2\n3\n4",
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output3")
+		output := filepath.Join(d, "output2-3")
 
 		// ACT
-		truncator, _ := NewLineTruncator(3, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(2, 3, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"\n2\n3\n",
+			"あ2\n3\n",
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output2")
+		output := filepath.Join(d, "output2-2")
 
 		// ACT
-		truncator, _ := NewLineTruncator(2, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(2, 2, "utf-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
 		assert.Equal(
 			t,
-			"\n2\n",
+			"あ2\n",
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output1")
+		output := filepath.Join(d, "output1-1")
 
 		// ACT
-		truncator, _ := NewLineTruncator(1, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 1, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -142,11 +142,11 @@ func TestNewLineTruncator_改行無しで終了(t *testing.T) {
 			test.ReadString(t, output))
 	}
 	{
-		output := filepath.Join(d, "output0")
+		output := filepath.Join(d, "output12-12")
 
 		// ACT
-		truncator, _ := NewLineTruncator(0, "UTF-8")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(12, 12, "UTF-8")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -157,7 +157,7 @@ func TestNewLineTruncator_改行無しで終了(t *testing.T) {
 	}
 }
 
-func TestNewLineTruncator_SJIS(t *testing.T) {
+func TestNewLineExtractor_SJIS(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -166,11 +166,11 @@ func TestNewLineTruncator_SJIS(t *testing.T) {
 		t, d, "input.txt", test.StringToByte(t, "あい\nうえ\nお\nかき\nく\n", japanese.ShiftJIS))
 
 	{
-		output := filepath.Join(d, "output3")
+		output := filepath.Join(d, "output1-3")
 
 		// ACT
-		truncator, _ := NewLineTruncator(3, "SJIS")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 3, "SJIS")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -180,11 +180,11 @@ func TestNewLineTruncator_SJIS(t *testing.T) {
 			test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS))
 	}
 	{
-		output := filepath.Join(d, "output2")
-		truncator, _ := NewLineTruncator(2, "SJIS")
+		output := filepath.Join(d, "output1-2")
 
 		// ACT
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 2, "SJIS")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -197,8 +197,8 @@ func TestNewLineTruncator_SJIS(t *testing.T) {
 		output := filepath.Join(d, "output1")
 
 		// ACT
-		truncator, _ := NewLineTruncator(1, "SJIS")
-		err := truncator.Truncate(input, output)
+		extractor, _ := NewLineExtractor(1, 1, "sjis")
+		err := extractor.Extract(input, output)
 
 		// ASSERT
 		require.NoError(t, err)
@@ -207,23 +207,9 @@ func TestNewLineTruncator_SJIS(t *testing.T) {
 			"あい\n",
 			test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS))
 	}
-	{
-		output := filepath.Join(d, "output0")
-		truncator, _ := NewLineTruncator(0, "SJIS")
-
-		// ACT
-		err := truncator.Truncate(input, output)
-
-		// ASSERT
-		require.NoError(t, err)
-		assert.Equal(
-			t,
-			"",
-			test.ByteToString(t, test.ReadBytes(t, output), japanese.ShiftJIS))
-	}
 }
 
-func TestNewLineTruncator_InputFileNotFound(t *testing.T) {
+func TestNewLineExtractor_InputFileNotFound(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -232,8 +218,8 @@ func TestNewLineTruncator_InputFileNotFound(t *testing.T) {
 	output := filepath.Join(d, "output")
 
 	// ACT
-	truncator, _ := NewLineTruncator(9, "UTF-8")
-	err := truncator.Truncate(input, output)
+	extractor, _ := NewLineExtractor(1, 9, "UTF-8")
+	err := extractor.Extract(input, output)
 
 	// ASSERT
 	require.Error(t, err)
@@ -242,7 +228,7 @@ func TestNewLineTruncator_InputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewLineTruncator_OutputFileNotFound(t *testing.T) {
+func TestNewLineExtractor_OutputFileNotFound(t *testing.T) {
 
 	// ARRANGE
 	d := t.TempDir()
@@ -251,8 +237,8 @@ func TestNewLineTruncator_OutputFileNotFound(t *testing.T) {
 	output := filepath.Join(d, "non", "output")
 
 	// ACT
-	truncator, _ := NewLineTruncator(9, "UTF-8")
-	err := truncator.Truncate(input, output)
+	extractor, _ := NewLineExtractor(1, 9, "UTF-8")
+	err := extractor.Extract(input, output)
 
 	// ASSERT
 	require.Error(t, err)
@@ -261,12 +247,30 @@ func TestNewLineTruncator_OutputFileNotFound(t *testing.T) {
 	assert.Equal(t, "open", pathErr.Op)
 }
 
-func TestNewLineTruncator_InvalidEncoding(t *testing.T) {
+func TestNewLineExtractor_InvalidEncoding(t *testing.T) {
 
 	// ACT
-	_, err := NewLineTruncator(9, "utf")
+	_, err := NewLineExtractor(1, 9, "utf")
 
 	// ASSERT
 	require.Error(t, err)
 	assert.EqualError(t, err, "utf is invalid: htmlindex: invalid encoding name")
+}
+
+func TestNewLineExtractor_InvalidRange_Start(t *testing.T) {
+
+	// ACT
+	_, err := NewLineExtractor(0, 10, "utf-8")
+
+	// ASSERT
+	assert.EqualError(t, err, "invalid range: start = 0, end = 10")
+}
+
+func TestNewLineExtractor_InvalidRange_End(t *testing.T) {
+
+	// ACT
+	_, err := NewLineExtractor(10, 9, "utf-8")
+
+	// ASSERT
+	assert.EqualError(t, err, "invalid range: start = 10, end = 9")
 }
