@@ -4,13 +4,13 @@
 [![Test](https://github.com/onozaty/filep/actions/workflows/test.yaml/badge.svg)](https://github.com/onozaty/filep/actions/workflows/test.yaml)
 [![codecov](https://codecov.io/gh/onozaty/filep/branch/main/graph/badge.svg?token=VSU64LAK8P)](https://codecov.io/gh/onozaty/filep)
 
-`filep` is a file processing tool.
+`filep` is a powerful command-line file processing tool designed to efficiently handle text files with various operations.
 
-`filep` has the following subcommands
+With `filep`, you can easily perform the following file operations:
 
-* [replace](#replace) Replace file contents.
-* [truncate](#truncate) Truncate file contents.
-* [extract](#extract) Extract file contents.
+* **[replace](#replace)** - Replace specific content in files using strings or regular expressions
+* **[truncate](#truncate)** - Truncate files to a specified size (by bytes, characters, or lines)
+* **[extract](#extract)** - Extract specific portions of files based on position ranges
 
 ## Common
 
@@ -51,7 +51,7 @@ Encoding must be one that can be specified in `htmlindex.Get`.
 
 ## replace
 
-Replace the contents of the input file to create an output file.  
+The `replace` command allows you to find and replace text in files using either string matching or powerful regular expressions. This is perfect for batch text replacements, data transformation, or content cleaning across multiple files.  
 
 ### Usage
 
@@ -110,11 +110,10 @@ $ filep replace -i input.txt -o output.txt -s "\u3000" -t "" --escape
 
 #### Binary encoding
 
-A special encoding is `binary`.  
-If `binary` is specified, it can be treated as a hexadecimal character.  
-A hexadecimal character represents a byte with three characters prefixed by `x`, such as `x00` or `xFF`.
+The special `binary` encoding allows you to work directly with binary data using hexadecimal notation.  
+Each byte is represented as a three-character sequence starting with `x`, such as `x00` for null byte or `xFF` for 255.
 
-To remove two consecutive bytes, such as 0x00 0x01, specify as follows
+For example, to remove a specific byte sequence like 0x00 0x01:
 
 ```
 $ filep replace -i input.txt -o output.txt -s x00x01 -t "" --encoding binary
@@ -127,7 +126,7 @@ $ filep replace -i input.txt -o output.txt -s x00x01 -t "" --encoding binary
 
 ## truncate
 
-Truncate the contents of the input file to create an output file.  
+The `truncate` command helps you cut files to a specific size, whether you need to limit by bytes, characters, or line count. This is useful for creating file previews, removing excess content, or processing large log files.  
 
 ### Usage
 
@@ -179,7 +178,7 @@ $ filep truncate -i input.txt -o output.txt -l 100
 
 ## extract
 
-Extract the contents of the input file to create an output file.  
+The `extract` command enables precise extraction of specific portions from files by defining start and end positions. You can extract content by bytes, characters, or lines, making it ideal for data parsing and content isolation.  
 
 ### Usage
 
@@ -238,12 +237,22 @@ $ filep extract -i input.txt -o output.txt -s 2 -c
 
 ## Install
 
-`filep` is implemented in golang and runs on all major platforms such as Windows, Mac OS, and Linux.  
-You can download the binaries for each OS from the links below.
+### Homebrew (macOS/Linux)
 
-You can download the binary from the following.
+```
+brew install onozaty/tap/filep
+```
 
-* https://github.com/onozaty/filep/releases/latest
+### Scoop (Windows)
+
+```
+scoop bucket add onozaty https://github.com/onozaty/scoop-bucket
+scoop install filep
+```
+
+### Binary Download
+
+Download the latest binary from [GitHub Releases](https://github.com/onozaty/filep/releases/latest).
 
 ## License
 
